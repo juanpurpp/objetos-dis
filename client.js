@@ -22,7 +22,7 @@ class RemoteLoginProxy {
 }
 
 // Inicializa la conexión al servidor
-const remoteLogin = new RemoteLoginProxy("http://localhost:3000");
+const remoteLogin = new RemoteLoginProxy("http://juankerberos.local:3000");
 
 // Configuración de readline para la consola
 const rl = readline.createInterface({
