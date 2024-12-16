@@ -1,9 +1,10 @@
+const readline = require("readline");
 const axios = require("axios");
 
-// Proxy del objeto remoto
+// Clase RemoteLoginProxy (opcional, puedes usar directamente Axios si prefieres)
 class RemoteLoginProxy {
     constructor(serverUrl) {
-        this.serverUrl = serverUrl; // Dirección del servidor
+        this.serverUrl = serverUrl;
     }
 
     async login(username, password) {
@@ -20,12 +21,48 @@ class RemoteLoginProxy {
     }
 }
 
-// Ejemplo de uso del cliente
-async function main() {
-    const remoteLogin = new RemoteLoginProxy("http://localhost:3000");
+// Inicializa la conexión al servidor
+const remoteLogin = new RemoteLoginProxy("http://localhost:3000");
 
-    console.log(await remoteLogin.login("pedrito", "yElLobo")); // true
-    console.log(await remoteLogin.login("liliana", "nieves")); // false
-}
+// Configuración de readline para la consola
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: "cliente> ",
+});
 
-main();
+console.log("Bienvenido al cliente de autenticación.");
+console.log('Usa el comando "login <username> <password>" para autenticarte.');
+console.log('Escribe "exit" para salir.');
+rl.prompt();
+
+// Procesar comandos
+rl.on("line", async (line) => {
+    const [command, ...args] = line.trim().split(" ");
+    switch (command) {
+        case "login":
+            if (args.length !== 2) {
+                console.log("Uso: login <username> <password>");
+            } else {
+                const [username, password] = args;
+                const result = await remoteLogin.login(username, password);
+                console.log(
+                    result
+                        ? `Login exitoso para "${username}".`
+                        : `Login fallido para "${username}".`
+                );
+            }
+            break;
+
+        case "exit":
+            console.log("Saliendo del cliente...");
+            rl.close();
+            process.exit(0);
+            break;
+
+        default:
+            console.log(`Comando no reconocido: "${command}".`);
+            console.log('Comandos disponibles: login, exit');
+    }
+    rl.prompt();
+});
