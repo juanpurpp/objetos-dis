@@ -47,8 +47,10 @@ const remoteLogin = new RemoteLogin();
 
 // Endpoint para login
 app.post("/login", (req, res) => {
+    console.log('Petición de login:', req.body);
     const { username, password } = req.body;
     const result = remoteLogin.login(username, password);
+
     res.json({ success: result });
 });
 
